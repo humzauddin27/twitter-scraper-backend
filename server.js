@@ -22,19 +22,20 @@ app.use(
 app.use(formData.parse());
 
 app.post("/search", async (req, res) => {
-  client.get(
-    "search/tweets",
-    {
+  let tweets = [];
+  for (let i = 0; i < 10; i++) {
+    let params = {
       q: req.body[0],
       count: 100,
       result_type: "recent"
-    },
-    function(error, tweets, response) {
-      if (error) console.error(error);
+    };
+    if (i > 0) params["max_id"] = tweets[tweets.length - 1].id;
+    let response = await client.get("search/tweets", params);
+    tweets = tweets.concat(response.statuses);
+    if (response.statuses.length < 100) break;
+  }
 
-      return res.json(tweets.statuses);
-    }
-  );
+  return res.json(tweets);
 });
 
 app.listen(process.env.PORT || 8080, () => console.log("👍"));
