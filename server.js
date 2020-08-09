@@ -23,16 +23,48 @@ app.use(formData.parse());
 
 app.post("/search", async (req, res) => {
   let tweets = [];
-  for (let i = 0; i < 10; i++) {
-    let params = {
-      q: req.body[0],
-      count: 100,
-      result_type: "recent"
-    };
-    if (i > 0) params["max_id"] = tweets[tweets.length - 1].id;
-    let response = await client.get("search/tweets", params);
-    tweets = tweets.concat(response.statuses);
-    if (response.statuses.length < 100) break;
+  let tweetsExhausted = false;
+
+  async function fillTweets() {
+    while (tweets.length < 1000) {
+      let params = {
+        q: req.body[0],
+        count: 100,
+        result_type: "recent"
+      };
+      if (tweets.length > 0) {
+        params["max_id"] = tweets[tweets.length - 1].id - 1;
+      }
+      let response = await client.get("search/tweets", params);
+      tweets = tweets.concat(response.statuses);
+      if (response.statuses.length < 100) {
+        tweetsExhausted = true;
+        break;
+      }
+    }
+  }
+
+  function filterTweets() {
+    const hash = {};
+    const arr = tweets.slice().filter(tweet => {
+      const id =
+        tweet && tweet.retweeted_status ? tweet.retweeted_status.id : tweet.id;
+      if (!hash[id]) {
+        hash[id] = 1;
+        return true;
+      } else {
+        return false;
+      }
+    });
+    return arr.slice(0, 1000);
+  }
+
+  while (true) {
+    await fillTweets();
+    tweets = filterTweets();
+    if (tweets.length >= 1000 || tweetsExhausted) {
+      break;
+    }
   }
 
   return res.json(tweets);
