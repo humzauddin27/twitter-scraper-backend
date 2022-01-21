@@ -12,8 +12,13 @@
 - [ ] Unit Tests pt2 (meet your BFF: Mockito)
 - [ ] Sweet APIs and Libraries
 
-## 🔖 Features
+## 💻 Environment Setup
+- https://formulae.brew.sh/formula/openjdk@11
+- https://www.jetbrains.com/idea/
+- [JDK on Mac](https://mkyong.com/java/how-to-install-java-on-mac-osx/)
+- [IntelliJ on Mac](https://devqa.io/brew-install-intellij/)
 
+## 🔖 Features
 1. Hello World container
     - Spring Boot debut
     - Simple `GET /now` endpoint
@@ -28,9 +33,7 @@
 4. Scrapper Analytics   
     - TBD
 
-
 ## 🧑‍🎓 Support material for study
-
 - Java documentation: https://docs.oracle.com/en/java/
 - Java Tutorial Video: https://www.youtube.com/watch?v=eIrMbAQSU34
 - Spring Boot Tutorial: https://spring.io/guides/gs/spring-boot/
